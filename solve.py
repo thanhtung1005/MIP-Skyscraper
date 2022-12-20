@@ -129,16 +129,16 @@ def solve(path, verbose=True):
     x = np.where(x.x == 1)
 
     solution = np.zeros(shape=(dim, dim), dtype=int)
-
-    for i in range(len(x[0])):
-        solution[x[0][i], x[1][i]] = x[2][i] + 1
-
-    renderTop = '  '
-    renderBot = '  '
-    for i in range(dim):
-        renderTop += f'  {visibleBuildingTop[i]} '
-        renderBot += f'  {visibleBuildingBottom[i]} '
     if verbose:
+        for i in range(len(x[0])):
+            solution[x[0][i], x[1][i]] = x[2][i] + 1
+
+        renderTop = '  '
+        renderBot = '  '
+        for i in range(dim):
+            renderTop += f'  {visibleBuildingTop[i]} '
+            renderBot += f'  {visibleBuildingBottom[i]} '
+
         # Display problem
         print(renderTop)
         for row in range(dim):
