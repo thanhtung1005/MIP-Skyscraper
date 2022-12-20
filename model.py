@@ -60,16 +60,17 @@ x = model.addMVar(shape=(dim, dim, dim), vtype=GRB.BINARY)
 # Each cell has enough number
 for i, j in product(range(dim), range(dim)):
     model.addConstr(gp.quicksum(x[i, j, k] for k in range(dim)) == 1)
-    model.addConstr(gp.quicksum(x[k, i, j]for k in range(dim)) == 1)
-    model.addConstr(gp.quicksum(x[i, k, j]for k in range(dim)) == 1)
+    model.addConstr(gp.quicksum(x[k, i, j] for k in range(dim)) == 1)
+    model.addConstr(gp.quicksum(x[i, k, j] for k in range(dim)) == 1)
 
 # Each area has enough number
 if dim == 9 and constraintArea == []:
     # Sky sudoky
     for i, j in product([0, 3, 6], [0, 3, 6]):
         for k in range(dim):
-            model.addConstr(gp.quicksum(x[a, b, k] for a, b in product([i, i + 1, i + 2],
-                                                                       [j, j + 1, j + 2])) == 1)
+            model.addConstr(gp.quicksum(x[a, b, k]
+                                        for a, b in product([i, i + 1, i + 2],
+                                                            [j, j + 1, j + 2])) == 1)
 else:
     # Krazytown
     for area in constraintArea:
