@@ -12,6 +12,12 @@ def solve(path, verbose=True):
 
     dim, fixCell, visibleBuildingLeft, visibleBuildingRight, visibleBuildingTop, visibleBuildingBottom, constraintArea = read_problem(path)
 
+    for i in range(len(fixCell)):
+        fixCell[i][0], fixCell[i][1] = fixCell[i][1], fixCell[i][0]
+
+    for area in constraintArea:
+        for i in range(len(area)):
+            area[i][0], area[i][1] = area[i][1], area[i][0]
 
     model = gp.Model('MIP skyscraper')
     model.setParam('LogToConsole', 0)
@@ -139,7 +145,7 @@ def solve(path, verbose=True):
             renderUpRow = '  +'
             renderRow = f'{visibleBuildingLeft[row]} |'
             for i in range(dim):
-                if (row + 1, i + 1, solution[row, i]) in fixCell:
+                if [row + 1, i + 1, solution[row, i]] in fixCell:
                     renderRow += f' {solution[row, i]} |'
                 else:
                     renderRow += f'   |'
@@ -164,7 +170,7 @@ def solve(path, verbose=True):
             print(renderRow)
         print(renderUpRow)
         print(renderBot)
-    
+
     return solution
 
 def parse_opt():
