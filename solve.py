@@ -10,7 +10,12 @@ from utils import read_problem
 
 def solve(path, verbose=True):
 
-    dim, fixCell, visibleBuildingLeft, visibleBuildingRight, visibleBuildingTop, visibleBuildingBottom, constraintArea = read_problem(path)
+    (dim, fixCell,
+     visibleBuildingLeft,
+     visibleBuildingRight,
+     visibleBuildingTop,
+     visibleBuildingBottom,
+     constraintArea) = read_problem(path)
 
     for i in range(len(fixCell)):
         fixCell[i][0], fixCell[i][1] = fixCell[i][1], fixCell[i][0]
