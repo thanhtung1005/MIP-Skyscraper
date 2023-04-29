@@ -10,12 +10,15 @@ from utils import read_problem
 
 def solve(path, verbose=True):
 
-    (dim, fixCell,
-     visibleBuildingLeft,
-     visibleBuildingRight,
-     visibleBuildingTop,
-     visibleBuildingBottom,
-     constraintArea) = read_problem(path)
+    (
+        dim,
+        fixCell,
+        visibleBuildingLeft,
+        visibleBuildingRight,
+        visibleBuildingTop,
+        visibleBuildingBottom,
+        constraintArea
+    ) = read_problem(path)
 
     for i in range(len(fixCell)):
         fixCell[i][0], fixCell[i][1] = fixCell[i][1], fixCell[i][0]
@@ -40,9 +43,15 @@ def solve(path, verbose=True):
         # Sky sudoky
         for i, j in product([0, 3, 6], [0, 3, 6]):
             for k in range(dim):
-                model.addConstr(gp.quicksum(x[a, b, k]
-                                            for a, b in product([i, i + 1, i + 2],
-                                                                [j, j + 1, j + 2])) == 1)
+                model.addConstr(
+                    gp.quicksum(
+                        x[a, b, k]
+                        for a, b in product(
+                            [i, i + 1, i + 2],
+                            [j, j + 1, j + 2]
+                        )
+                    ) == 1
+                )
     else:
         # Krazytown
         for area in constraintArea:
@@ -60,17 +69,19 @@ def solve(path, verbose=True):
             for k in range(j, dim - 1):
                 z = model.addVar(vtype=GRB.BINARY)
                 xLeft.append(z)
-                y = gp.quicksum(x[i, a, b]
-                                for a in range(j)
-                                for b in range(k + 1, dim))
+                y = gp.quicksum(
+                    x[i, a, b]
+                    for a in range(j)
+                    for b in range(k + 1, dim)
+                )
                 model.addConstr(y + j*z - j <= 0)
                 model.addConstr(x[i, j, k] - z >= 0)
                 model.addConstr(x[i, j, k] - y - z <= 0)
-        model.addConstr(gp.quicksum(xL
-                                    for xL in xLeft)
-                        + gp.quicksum(x[i, j, dim - 1]
-                                    for j in range(dim))
-                        >= visibleBuildingLeft[i] - 1)
+        model.addConstr(
+            gp.quicksum(xL for xL in xLeft)
+            + gp.quicksum(x[i, j, dim - 1] for j in range(dim))
+            >= visibleBuildingLeft[i] - 1
+        )
 
         # From right
         xRight = []
@@ -79,17 +90,18 @@ def solve(path, verbose=True):
                 k = dim - 1 - val - 1
                 z = model.addVar(vtype=GRB.BINARY)
                 xRight.append(z)
-                y = gp.quicksum(x[i, a, b]
-                                for a in range(j + 1, dim)
-                                for b in range(k + 1, dim))
+                y = gp.quicksum(
+                    x[i, a, b]
+                    for a in range(j + 1, dim)
+                    for b in range(k + 1, dim)
+                )
                 model.addConstr(y + j*z - j <= 0)
                 model.addConstr(x[i, j, k] - z >= 0)
                 model.addConstr(x[i, j, k] - y - z <= 0)
-        model.addConstr(gp.quicksum(xR
-                                    for xR in xRight)
-                        + gp.quicksum(x[i, j, dim - 1]
-                                    for j in range(dim))
-                        >= visibleBuildingRight[i] - 1)
+        model.addConstr(
+            gp.quicksum(xR for xR in xRight)
+            + gp.quicksum(x[i, j, dim - 1] for j in range(dim))
+            >= visibleBuildingRight[i] - 1)
 
         # From top
         xTop = []
@@ -97,17 +109,18 @@ def solve(path, verbose=True):
             for k in range(j, dim - 1):
                 z = model.addVar(vtype=GRB.BINARY)
                 xTop.append(z)
-                y = gp.quicksum(x[a, i, b]
-                                for a in range(j)
-                                for b in range(k + 1, dim))
+                y = gp.quicksum(
+                    x[a, i, b]
+                    for a in range(j)
+                    for b in range(k + 1, dim)
+                )
                 model.addConstr(y + j*z - j <= 0)
                 model.addConstr(x[j, i, k] - z >= 0)
                 model.addConstr(x[j, i, k] - y - z <= 0)
-        model.addConstr(gp.quicksum(xT
-                                    for xT in xTop)
-                        + gp.quicksum(x[j, i, dim - 1]
-                                    for j in range(dim))
-                        >= visibleBuildingTop[i] - 1)
+        model.addConstr(
+            gp.quicksum(xT for xT in xTop)
+            + gp.quicksum(x[j, i, dim - 1] for j in range(dim))
+            >= visibleBuildingTop[i] - 1)
 
         # From bottom
         xBottom = []
@@ -116,17 +129,19 @@ def solve(path, verbose=True):
                 k = dim - 1 - val - 1
                 z = model.addVar(vtype=GRB.BINARY)
                 xBottom.append(z)
-                y = gp.quicksum(x[a, i, b]
-                                for a in range(j + 1, dim)
-                                for b in range(k + 1, dim))
+                y = gp.quicksum(
+                    x[a, i, b]
+                    for a in range(j + 1, dim)
+                    for b in range(k + 1, dim)
+                )
                 model.addConstr(y + j*z - j <= 0)
                 model.addConstr(x[j, i, k] - z >= 0)
                 model.addConstr(x[j, i, k] - y - z <= 0)
-        model.addConstr(gp.quicksum(xB
-                                    for xB in xBottom)
-                        + gp.quicksum(x[j, i, dim - 1]
-                                    for j in range(dim))
-                        >= visibleBuildingBottom[i] - 1)
+        model.addConstr(
+            gp.quicksum(xB for xB in xBottom)
+            + gp.quicksum(x[j, i, dim - 1] for j in range(dim))
+            >= visibleBuildingBottom[i] - 1
+        )
 
     model.setObjective(0, GRB.MAXIMIZE)
     model.optimize()
